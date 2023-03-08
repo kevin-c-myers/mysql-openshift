@@ -1,5 +1,5 @@
 import os
-import mysql.connector
+import pymysql
 from flask import Flask,request,render_template
 from flask_cors import CORS
 import json
@@ -14,10 +14,10 @@ HOST = os.environ.get('MYSQL_HOST')
 DATABASE = os.getenv('MYSQL_DATABASE')
 
 try:
-    mydb = mysql.connector.connect(
+    mydb = pymysql.connect(
     host=str(HOST),
     user=str(USER),
-    passwd=str(PASSWORD),
+    password=str(PASSWORD),
     db = str(DATABASE)
     )
     mycursor = mydb.cursor()
@@ -37,14 +37,11 @@ def getCustomer(id):
     sql = "SELECT * FROM customer WHERE id = %(id)s"
     try:
         mycursor.execute(sql,{ 'id': str(id) })
-        columns = mycursor.column_names
-        myresult = mycursor.fetchall()
-        json_data=[]
-        for result in myresult:
-            json_data.append(dict(zip(columns,result)))
+        result = mycursor.fetchone()
+        print(result)
 
-        print(json_data)
-        return json.dumps(json_data[0],default=str)
+        return json.dumps(result[0],default=str)
+
       
     except Exception as e:
         return "Could not retrieve records from DB: " + str(e)
