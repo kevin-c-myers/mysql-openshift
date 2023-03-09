@@ -37,11 +37,10 @@ def getCustomer(id):
     sql = "SELECT * FROM customer WHERE id = %(id)s"
     try:
         mycursor.execute(sql,{ 'id': str(id) })
-        result = mycursor.fetchone()
-        print(result)
-
-        return json.dumps(result[0],default=str)
-
+        myresult = mycursor.fetchone()
+        result = []
+        result.append(myresult)
+        return result
       
     except Exception as e:
         return "Could not retrieve records from DB: " + str(e)
